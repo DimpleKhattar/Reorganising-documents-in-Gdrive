@@ -1,0 +1,23 @@
+// This code takes a bunch of google drive file links on one row of a spreadsheet and move them into a folder with the name of the first row
+function moveFiles(){
+  //this is a helper function that strips the ID from the URL
+  function getIdFromUrl(url) { return url.match(/[-\w]{25,}/); }
+  //this creates a folder where all of these new folders will be created
+  let dest_folder=DriveApp.getFolderById('1-nAQDU_Ttg2Wg5A3C663h3PgZFiGR8t3');
+  //this brings the data from the spreadhseet into the program
+  var values = SpreadsheetApp.getActiveSheet().getDataRange().getValues()
+  //this loops through the rows of the spreadsheet
+  for (n = 1; n < values.length; ++n) {
+    var pan = values[n][0] //save the first value
+    var new_folder_id = dest_folder.createFolder(pan).getId() //create a new folder saving its ID
+    let new_folder =DriveApp.getFolderById(new_folder_id) //create the folder object based on that ID
+    for (j=1; j < 7; ++j) {
+      //loop through the columbs to get the files
+      var org_id = getIdFromUrl(values[n][j])
+      //create a file object
+      let file = DriveApp.getFileById(org_id[0]);
+      //add the files to the folder
+      new_folder.createFile(file);
+    }
+  }
+}
