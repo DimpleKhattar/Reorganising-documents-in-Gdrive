@@ -1,0 +1,16 @@
+//This code will create a list of folders wherever the active spreadsheet is stored
+function LISTING() {
+  let Folders = DriveApp.getFileById(SpreadsheetApp.getActiveSpreadsheet().getId()).getParents()
+  Logger.log(Folders)
+  let result = [];
+  while(Folders.hasNext()){
+    let Folder = Folders.next()
+    let Files = Folder.getFiles()
+    while(Files.hasNext()){
+      let File = Files.next()
+      result.push([File.getUrl(),File.getName(),File.getMimeType()])
+    }
+  }
+  Logger.log(result)
+  SpreadsheetApp.getActiveSheet().getRange(1,1,result.length,result[0].length).setValues(result)
+}
